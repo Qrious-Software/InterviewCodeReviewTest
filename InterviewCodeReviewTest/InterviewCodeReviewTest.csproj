@@ -8,10 +8,13 @@
     <OutputType>Library</OutputType>
     <RootNamespace>InterviewCodeReviewTest</RootNamespace>
     <AssemblyName>InterviewCodeReviewTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,7 +40,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,13 +52,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\BaseConnection.cs" />
+    <Compile Include="Base\BaseDAO.cs" />
+    <Compile Include="Base\IBaseConnection.cs" />
+    <Compile Include="DAO\CustomerDAO.cs" />
+    <Compile Include="Interface\IConfiguration.cs" />
+    <Compile Include="Interface\IDataAccessLayer.cs" />
+    <Compile Include="Interface\IDataAccessLayerResolver.cs" />
+    <Compile Include="Interface\IRepository.cs" />
+    <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\Purchase.cs" />
+    <Compile Include="Model\RequestModel.cs" />
+    <Compile Include="Model\Result.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test1.cs" />
-    <Compile Include="Test2.cs" />
+    <Compile Include="Repositories\CustomerRepository.cs" />
+    <Compile Include="PurchaseReward.cs" />
     <Compile Include="Test3.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="appsettings.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
+  </Target>
 </Project>
