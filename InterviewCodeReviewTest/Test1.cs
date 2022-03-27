@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -12,29 +13,45 @@ namespace InterviewCodeReviewTest
 		public IEnumerable<Address> GetCustomerNumbers(string status)
 		{
 			var connection = new SqlConnection("data source=TestServer;initial catalog=CustomerDB;Trusted_Connection=True");
-			var cmd = new SqlCommand($"SELECT CustomerAddress FROM dbo.Customer WHERE Status = '{status}'", connection);
-
+			
+			
+			
 			try
 			{
-				var addressStrings = new List<string>();
+				//Use using statement for closing connection automatically
+                using (connection)
+                {
+					//Use parameter query for preventing injection
+					var cmd = new SqlCommand();
+					cmd.Connection = connection;
+					cmd.CommandText = "SELECT CustomerAddress FROM dbo.Customer WHERE Status = @status";
+					cmd.CommandType = CommandType.Text;
+					cmd.Parameters.Add(new SqlParameter("@status", SqlDbType.VarChar, 100)).Value = status;
 
-				connection.Open();
-				var reader = cmd.ExecuteReader();
+					connection.Open();
 
-				while (reader.Read())
-				{
-					addressStrings.Add(reader.GetString(0));
+					var reader = cmd.ExecuteReader();
+
+					var addressStrings = new List<string>();
+
+					while (reader.Read())
+					{
+						addressStrings.Add(reader.GetString(0));
+					}
+
+					return addressStrings
+						.Select(StringToAddress)
+						.Where(x => x != null)
+						.ToList();
+
 				}
-
-				return addressStrings
-					.Select(StringToAddress)
-					.Where(x => x != null)
-					.ToList();
+				
 			}
 			catch (Exception ex)
 			{
 				throw ex;
 			}
+			
 		}
 
 		private static Address StringToAddress(string addressString)
