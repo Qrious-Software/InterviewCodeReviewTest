@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Net.Mail;
 using System.Threading;
 
 namespace InterviewCodeReviewTest
@@ -22,9 +23,20 @@ namespace InterviewCodeReviewTest
 
 			private void SendEmail()
 			{
-				var client = new SmtpClient();
-				// Send email via Smtp and returns Result object...
-				UpdateStatistics(result);
+				try
+                {
+					var client = new SmtpClient();
+					// Send email via Smtp and returns Result object...
+					MailMessage mail = new MailMessage();
+					client.Send(mail);
+
+					UpdateStatistics(Result.Success());
+				}
+				catch(Exception e)
+                {
+					UpdateStatistics(Result.Failed());
+				}
+				
 			}
 
 			private void UpdateStatistics(Result result)

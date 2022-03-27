@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Transactions;
 
 namespace InterviewCodeReviewTest
 {
@@ -14,30 +15,32 @@ namespace InterviewCodeReviewTest
 			var cmdPurchase = new SqlCommand("INSERT INTO dbo.Purchase..."); // omitted the columns
 			var cmdReward = new SqlCommand("INSERT INTO dbo.Reward..."); // omitted the columns
 
-			SqlTransaction tranPurchase = null;
-			SqlTransaction tranReward = null;
-
 			try
 			{
 				connPruchase.Open();
-				tranPurchase = connPruchase.BeginTransaction();
-				cmdPurchase.ExecuteNonQuery();
-
 				connReward.Open();
-				tranReward = connReward.BeginTransaction();
-				cmdReward.ExecuteNonQuery();
 
-				tranPurchase.Commit();
-				tranReward.Commit();
+				//Use transactionscope for handling multiple connections' transaction at once
+				using (TransactionScope scope = new TransactionScope())
+				{
+					cmdPurchase.ExecuteNonQuery();
+					cmdReward.ExecuteNonQuery();
 
+					scope.Complete();
+				}
+				
 				return Result.Success();
 			}
 			catch (Exception ex)
 			{
-				tranPurchase.Rollback();
-				tranReward.Rollback();
-
 				return Result.Failed();
+			}
+            finally
+            {
+				//Add DB connection close
+				connPruchase.Close();
+				connReward.Close();
+
 			}
 		}
 	}
