@@ -12,6 +12,7 @@ namespace InterviewCodeReviewTest
 		public IEnumerable<Address> GetCustomerNumbers(string status)
 		{
 			var connection = new SqlConnection("data source=TestServer;initial catalog=CustomerDB;Trusted_Connection=True");
+			// Concern about SQL Injection should sanitize status string before query
 			var cmd = new SqlCommand($"SELECT CustomerAddress FROM dbo.Customer WHERE Status = '{status}'", connection);
 
 			try
@@ -39,6 +40,7 @@ namespace InterviewCodeReviewTest
 
 		private static Address StringToAddress(string addressString)
 		{
+			//Detect invalid address strings and return null if invalid
 			return new Address(addressString);
 		}
 	}

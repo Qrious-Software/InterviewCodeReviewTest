@@ -16,6 +16,7 @@ namespace InterviewCodeReviewTest
 			// Assign each email to different thread for performance
 			public void SendNextEmail()
 			{
+				//Can we be sure the thread will be closed after the email has been sent
 				var thread = new Thread(SendEmail);
 				thread.Start();
 			}

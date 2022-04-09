@@ -8,12 +8,14 @@ namespace InterviewCodeReviewTest
 		// Record customer purchase and update customer reward programme
 		public Result UpdateCustomerHistory(Purchase customerPurchase)
 		{
+			//Consider rename misspelled variable connPruchase
 			var connPruchase = new SqlConnection("data source=TestPurchaseServer;initial catalog=PurchaseDB;Trusted_Connection=True");
 			var connReward = new SqlConnection("data source=TestRewardServer;initial catalog=RewardDB;Trusted_Connection=True");
 
+			//Assume customerPurchase is already sanitize
 			var cmdPurchase = new SqlCommand("INSERT INTO dbo.Purchase..."); // omitted the columns
 			var cmdReward = new SqlCommand("INSERT INTO dbo.Reward..."); // omitted the columns
-
+			//Good use case for Transactions 
 			SqlTransaction tranPurchase = null;
 			SqlTransaction tranReward = null;
 
@@ -34,6 +36,8 @@ namespace InterviewCodeReviewTest
 			}
 			catch (Exception ex)
 			{
+				//Check transactions not null before calling Rollback
+				//Should log Exception
 				tranPurchase.Rollback();
 				tranReward.Rollback();
 
